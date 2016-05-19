@@ -1,0 +1,179 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="css/reveal.css">
+        <link rel="stylesheet" href="css/theme/black.css">
+        <link rel="stylesheet" href="lib/css/zenburn.css">
+
+    </head>
+    <body>
+        <div class="reveal">
+            <div class="slides">
+                <section>
+                    <h2>React</h2>
+                    <h3>A Javascript library for building user interfaces</h3>
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/5/57/React.js_logo.svg" title="logo" width="450px" height="450px">
+                </section>
+                <section>
+                    <h2>Key Concepts</h2>
+                    <ul>
+                        <li>Only UI</li>
+                        <li>Declarative</li>
+                        <li>Composable</li>
+                    </ul>
+                </section>
+                <section>
+                    <h2>Basic example</h2>
+                    <iframe src="examples/exemple-1.html" width="450"></iframe>
+                    <pre><code class="html">
+  &lt;head&gt;
+    <meta charset="UTF-8" />
+    <title>Hello React!</title>
+    &lt;script src="https://fb.me/react-with-addons-15.0.1.js"&gt;&lt;/script&gt;
+    &lt;script src="https://fb.me/react-dom-15.0.1.js"&gt;&lt;/script&gt;
+    &lt;script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"&gt;&lt;/script&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    <div id="example"></div>
+    <script type="text/babel">
+      ReactDOM.render(
+        <h1>Hello, world!</h1>,
+        document.getElementById('example')
+      );
+    </script>
+  &lt;/body&gt;
+                    </code></pre>
+                </section>
+                <section>
+                    <h2>Composition</h2>
+<iframe src="examples/exemple-2.html" width="450"></iframe>
+<pre><code class="javascript">
+class Children extends React.Component {
+    render() {
+        return (
+            &lt;li&gt;Child&lt;/li&gt;
+        );
+    }
+}
+class Parent extends React.Component {
+    render() {
+        return (
+            &lt;ul&gt;
+                &lt;Children /&gt;
+                &lt;Children /&gt;
+            &lt;/ul&gt;
+        );
+    }
+}
+ReactDOM.render(
+    <Parent />,
+    document.getElementById('example')
+);
+</code></pre>
+                </section>
+                <section>
+                    <h2>Props</h2>
+                    <iframe src="examples/exemple-3.html" width="450"></iframe>
+<pre><code class="javascript">
+class Children extends React.Component {
+    render() {
+        return (
+            &lt;li&gt;{this.props.name}&lt;/li&gt;
+        );
+    }
+}
+class Parent extends React.Component {
+    render() {
+        return (
+            &lt;ul&gt;
+                &lt;Children name="lorem"/&gt;
+                &lt;Children name="ipsum"/&gt;
+            &lt;/ul&gt;
+        );
+    }
+}
+ReactDOM.render(
+    &lt;Parent /&gt;,
+    document.getElementById('example')
+);
+</code></pre>
+                </section>
+                <section>
+                    <h2>State</h2>
+                    <iframe src="examples/exemple-4.html" width="450"></iframe>
+<pre><code class="javascript">
+class MyComp extends React.Component {
+        constructor(props, context) {
+            super(props, context);
+            this.state = {
+                name: ''
+            }
+            this.handleChange = this.handleChange.bind(this);
+        }
+        handleChange(event) {
+            this.setState({
+                name: event.target.value
+            });
+        }
+        render() {
+            return (
+                &lt;div&gt;
+                    &lt;input type="text" onChange={this.handleChange} value={this.state.name}/&gt;
+                    &lt;span&gt;Hello {this.state.name}&lt;/span&gt;
+                &lt;/div&gt;
+            );
+        }
+    }
+</code></pre>
+                </section>
+                <section>
+                    <h2>Lifecycle</h2>
+                    <ul>
+                        <li>componentWillMount</li>
+                        <li>componentDidMount</li>
+                        <li>componentWillReceiveProps</li>
+                        <li>shouldComponentUpdate</li>
+                        <li>componentWillUpdate</li>
+                        <li>componentDidUpdate</li>
+                        <li>componentWillUnmount</li>
+                    </ul>
+                </section>
+                <section>
+                    <h2>Functional components</h2>
+                    <iframe src="examples/exemple-5.html" width="450"></iframe>
+<pre><code class="javascript">
+function Children(props) {
+    return &lt;li>{props.name}&lt;/li>;
+}
+function Parent() {
+    return (
+        &lt;ul&gt;
+            &lt;Children name="lorem"/&gt;
+            &lt;Children name="ipsum"/&gt;
+        &lt;/ul&gt;
+    );
+}
+ReactDOM.render(
+    &lt;Parent /&gt;,
+    document.getElementById('example')
+);
+</code></pre>
+                </section>
+            </div>
+        </div>
+        <script src="lib/js/head.min.js"></script>
+        <script src="js/reveal.js"></script>
+
+        <script>
+            Reveal.initialize({
+                history: true,
+                dependencies: [
+                    {
+                        src: 'plugin/highlight/highlight.js', async: true, callback: function () {
+                        hljs.initHighlightingOnLoad();
+                    }
+                    }
+                ]
+            });
+        </script>
+    </body>
+</html>

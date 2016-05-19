@@ -1,0 +1,3 @@
+node_modules
+var/babel/
+src/config/settings.json

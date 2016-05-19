@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>Hello React!</title>
+    <script src="https://fb.me/react-with-addons-15.0.1.js"></script>
+    <script src="https://fb.me/react-dom-15.0.1.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>
+    <style type="text/css">
+        body {
+            background: #fff;
+            color: #000;
+        }
+    </style>
+</head>
+<body>
+<div id="example"></div>
+<script type="text/babel">
+    function Children(props) {
+        return <li>{props.name}</li>;
+    }
+    function Parent() {
+        return (
+            <ul>
+                <Children name="lorem"/>
+                <Children name="ipsum"/>
+            </ul>
+        );
+    }
+
+    ReactDOM.render(
+            <Parent />,
+            document.getElementById('example')
+    );
+</script>
+</body>
+</html>

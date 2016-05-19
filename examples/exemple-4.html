@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>Hello React!</title>
+    <script src="https://fb.me/react-with-addons-15.0.1.js"></script>
+    <script src="https://fb.me/react-dom-15.0.1.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>
+    <style type="text/css">
+        body {
+            background: #fff;
+            color: #000;
+        }
+    </style>
+</head>
+<body>
+<div id="example"></div>
+<script type="text/babel">
+    class MyComp extends React.Component {
+        constructor(props, context) {
+            super(props, context);
+            this.state = {
+                name: ''
+            }
+            this.handleChange = this.handleChange.bind(this);
+        }
+        handleChange(event) {
+            this.setState({
+                name: event.target.value
+            });
+        }
+        render() {
+            return (
+                <div>
+                    <input type="text" onChange={this.handleChange} value={this.state.name}/>
+                    <div>Hello {this.state.name}</div>
+                </div>
+            );
+        }
+    }
+
+
+    ReactDOM.render(
+            <MyComp />,
+            document.getElementById('example')
+    );
+</script>
+</body>
+</html>
