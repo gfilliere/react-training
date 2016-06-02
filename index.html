@@ -22,26 +22,44 @@
                     </ul>
                 </section>
                 <section>
-                    <h2>Basic example</h2>
-                    <iframe src="examples/exemple-1.html" width="450"></iframe>
-                    <pre><code class="html">
-  &lt;head&gt;
-    <meta charset="UTF-8" />
-    <title>Hello React!</title>
-    &lt;script src="https://fb.me/react-with-addons-15.0.1.js"&gt;&lt;/script&gt;
-    &lt;script src="https://fb.me/react-dom-15.0.1.js"&gt;&lt;/script&gt;
-    &lt;script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"&gt;&lt;/script&gt;
-  &lt;/head&gt;
-  &lt;body&gt;
-    <div id="example"></div>
-    <script type="text/babel">
-      ReactDOM.render(
-        <h1>Hello, world!</h1>,
-        document.getElementById('example')
-      );
-    </script>
-  &lt;/body&gt;
-                    </code></pre>
+                  <section>
+                      <h2>Basic example</h2>
+                      <iframe src="examples/exemple-1.html" width="450"></iframe>
+                      <pre><code class="html">
+&lt;head&gt;
+  <meta charset="UTF-8" />
+  <title>Hello React!</title>
+  &lt;script src="https://fb.me/react-with-addons-15.0.1.js"&gt;&lt;/script&gt;
+  &lt;script src="https://fb.me/react-dom-15.0.1.js"&gt;&lt;/script&gt;
+  &lt;script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  <div id="example"></div>
+  <script type="text/babel">
+    ReactDOM.render(
+      <div>
+        <h1>Hello, world!</h1>
+      </div>,
+      document.getElementById('example')
+    );
+  </script>
+&lt;/body&gt;
+                      </code></pre>
+                  </section>
+                  <section>
+                      <h2>Without JSX</h2>
+                      <iframe src="examples/exemple-1-bis.html" width="450"></iframe>
+                      <pre><code class="html">
+<script type="text/babel">
+  ReactDOM.render(
+    React.createElement('div', {},
+      React.createElement('h1', {}, "Hello World!")
+    ),
+    document.getElementById('example')
+  );
+</script>
+                      </code></pre>
+                  </section>
                 </section>
                 <section>
                     <h2>Composition</h2>
@@ -65,7 +83,7 @@ class Parent extends React.Component {
     }
 }
 ReactDOM.render(
-    <Parent />,
+    &lt;Parent /&gt;,
     document.getElementById('example')
 );
 </code></pre>
@@ -136,6 +154,11 @@ class MyComp extends React.Component {
                         <li>componentDidUpdate</li>
                         <li>componentWillUnmount</li>
                     </ul>
+                    <div>
+                      <a href="https://facebook.github.io/react/docs/component-specs.html#lifecycle-methods">
+                        Official doc
+                      </a>
+                    </div>
                 </section>
                 <section>
                     <h2>Functional components</h2>
