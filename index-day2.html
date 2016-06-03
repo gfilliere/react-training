@@ -1,0 +1,127 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="css/reveal.css">
+        <link rel="stylesheet" href="css/theme/black.css">
+        <link rel="stylesheet" href="lib/css/zenburn.css">
+
+    </head>
+    <body>
+        <div class="reveal">
+            <div class="slides">
+                <section>
+                  <section>
+                    <h3>Problems with day 1 implementation</h3>
+                    <ul>
+                        <li class="fragment">Data retrieval / update from our components</li>
+                        <li class="fragment">Lot of internal state in our components</li>
+                    </ul>
+                  </section>
+                  <section>
+                    <h3>Data retrieval / update from our components</h3>
+                    <ul>
+                        <li class="fragment">React is a UI library</li>
+                        <li class="fragment">What if there are more data to get ?</li>
+                        <li class="fragment">Separation of concern</li>
+                    </ul>
+                  </section>
+                  <section>
+                    <h3>Lot of internal state in our components</h3>
+                    <ul>
+                        <li class="fragment">Putting everything into state is a common mistake</li>
+                        <li class="fragment">State is hard to test</li>
+                    </ul>
+                  </section>
+                </section>
+                <section>
+                  <section>
+                    <h2>How can we solve this ?</h2>
+                    <ul>
+                        <li class="fragment">Traditionnal answer : MVC</li>
+                        <li class="fragment">React / Facebook answer : Flux</li>
+                    </ul>
+                  </section>
+                  <section>
+                    <h2>MVC</h2>
+                    <ul>
+                        <li class="fragment">Seems logical with React as the View layer</li>
+                        <li class="fragment">MVC is well known in most languages</li>
+                        <li class="fragment">MVC has scalability issues</li>
+                    </ul>
+                    <div style="position:relative; width:600px; height:340px; margin:0 auto;">
+                      <img class="fragment" width="600" height="340" src="./images/MVC-Standard.png" style="position:absolute;top:0;left:0;" />
+                      <img class="fragment" width="600" height="340" src="./images/MVC-Scalability.png" style="position:absolute;top:0;left:0;" />
+                    </div>
+                  </section>
+                  <section>
+                    <h2>Flux</h2>
+                    <span class="fragment">Universal data flow</span>
+                    <img class="fragment" width="909" height="200" src="./images/flux-simple.png" />
+                    <img class="fragment" width="662" height="200" src="./images/flux-simple-with-client-action.png" />
+                    <ul class="fragment" style="font-size: smaller;">
+                      <li><a href="https://www.youtube.com/embed/nYkdrAPrdcw?list=PLb0IAmt7-GS188xDYE-u1ShQmFFGbrk0v&start=621">Flux introduction video</a></li>
+                      <li><a href="https://medium.com/swlh/the-case-for-flux-379b7d1982c6#.2c7xpxoa1">The case for Flux</a></li>
+                    </p>
+                  </section>
+                  <section>
+                    <h2>Redux</h2>
+                    <ul>
+                      <li class="fragment">Flux like implementation</li>
+                      <li class="fragment">"Predictable state container"</li>
+                      <li class="fragment">
+                        Basic concept :
+                        <ul>
+                          <li class="fragment">Entire app state is stored in a single object tree</li>
+                          <li class="fragment">You emit an action (an object describing what should happen)</li>
+                          <li class="fragment">A reducer function takes the action and transform the state</li>
+                        </ul>
+                      </li>
+                    </ul>
+                  </section>
+                  <section>
+                    <h3>Redux base</h3>
+                    <pre><code class="javascript" style="font-size:smaller; max-height:500px;">
+import { createStore } from 'redux'
+function counter(state = 0, action) {
+  switch (action.type) {
+  case 'INCREMENT':
+    return state + 1
+  case 'DECREMENT':
+    return state - 1
+  default:
+    return state
+  }
+}
+let store = createStore(counter)
+store.subscribe(() => console.log(store.getState()))
+const incrementAction = { type: 'INCREMENT' }
+const decrementAction = { type: 'DECREMENT' }
+store.dispatch(incrementAction) // 1
+store.dispatch(incrementAction) // 2
+store.dispatch(decrementAction) // 1
+</code></pre>
+                <ul style="font-size: smaller;">
+                  <li><a href="http://redux.js.org/">Redux official documentation</a></li>
+                  <li><a href="https://egghead.io/series/getting-started-with-redux">30 videos courses by Dan Abramov</a></li>
+                  <li><a href="https://github.com/reactjs/redux/tree/master/examples/counter">Counter example</a></li>
+                </p>
+                </section>
+
+            </div>
+        </div>
+        <script src="lib/js/head.min.js"></script>
+        <script src="js/reveal.js"></script>
+
+        <script>
+            Reveal.initialize({
+                history: true,
+                dependencies: [
+                    {
+                        src: 'plugin/highlight/highlight.js', async: true, callback: function () {
+                        hljs.initHighlightingOnLoad();
+                    }
+                    }
+                ]
+            });
+        </script>
+    </body>
+</html>
