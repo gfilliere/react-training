@@ -3,7 +3,9 @@ import createReducer from './createReducer';
 const initialState = {
   loading: false,
   error: false,
-  repos: []
+  repos: [],
+  textFilter: '',
+  repoStatus: 'favorites'
 };
 
 export default createReducer(initialState, {
@@ -33,6 +35,24 @@ export default createReducer(initialState, {
       {
         loading: false,
         error: true
+      }
+    );
+  },
+  ['TEXT_FILTER_CHANGE']: (state, action) => { // eslint-disable-line
+    return Object.assign(
+      {},
+      state,
+      {
+        textFilter: action.text
+      }
+    );
+  },
+  ['STATUS_FILTER_CHANGE']: (state, action) => { // eslint-disable-line
+    return Object.assign(
+      {},
+      state,
+      {
+        repoStatus: action.value
       }
     );
   }

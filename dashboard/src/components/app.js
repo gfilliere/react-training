@@ -2,68 +2,12 @@ import React, { Component, PropTypes } from 'react';
 import { ControlLabel, Form, FormControl, FormGroup, PageHeader, Radio } from 'react-bootstrap';
 import { connect } from 'react-redux';
 
-import { fetchRepoList } from '../actions/';
+import { fetchRepoList, setTextFilter, setRepoStatusFilter } from '../actions/';
 import RepoList from './RepoList';
 
 class App extends Component {
-  constructor(props, context) {
-    super(props, context);
-    this.state = {
-      filter: {
-        text: '',
-        repoStatus: 'favorites'
-      }
-    };
-
-    this.handleFilterChange = this.handleFilterChange.bind(this);
-    this.showAllRepos = this.showAllRepos.bind(this);
-    this.showFavoritesRepos = this.showFavoritesRepos.bind(this);
-  }
-
   componentWillMount() {
     this.props.fetchRepoList();
-  }
-
-  getFilteredRepos() {
-    return this.props.repos.filter(
-      (repo) => {
-        if (this.state.filter.repoStatus === 'all') {
-          return repo.full_name.match(this.state.filter.text);
-        }
-        return this.isFavorite(repo.id)
-          && repo.full_name.match(this.state.filter.text);
-      }
-    );
-  }
-
-  setRepoStatusFilter(nextFilter) {
-    this.setState({
-      filter: {
-        text: this.state.filter.text,
-        repoStatus: nextFilter
-      }
-    });
-  }
-
-  isFavorite(id) {
-    return this.props.favorites.indexOf(id) !== -1;
-  }
-
-  handleFilterChange(event) {
-    this.setState({
-      filter: {
-        text: event.target.value,
-        repoStatus: this.state.filter.repoStatus
-      }
-    });
-  }
-
-  showAllRepos() {
-    this.setRepoStatusFilter('all');
-  }
-
-  showFavoritesRepos() {
-    this.setRepoStatusFilter('favorites');
   }
 
   renderForm() {
@@ -74,8 +18,8 @@ class App extends Component {
           {' '}
           <FormControl
             type="text"
-            value={this.state.filter.text}
-            onChange={this.handleFilterChange}
+            value={this.props.textFilter}
+            onChange={this.props.setTextFilter}
           />
         </FormGroup>
         {' '}
@@ -83,15 +27,15 @@ class App extends Component {
           <ControlLabel>Filter</ControlLabel>
           {' '}
           <Radio
-            checked={this.state.filter.repoStatus === 'favorites'}
-            onChange={this.showFavoritesRepos}
+            checked={this.props.repoStatus === 'favorites'}
+            onChange={this.props.showFavoritesRepos}
           >
             {' '}Only favorites
           </Radio>
           {' '}
           <Radio
-            checked={this.state.filter.repoStatus === 'all'}
-            onChange={this.showAllRepos}
+            checked={this.props.repoStatus === 'all'}
+            onChange={this.props.showAllRepos}
           >
             {' '}Show all repositories
           </Radio>
@@ -109,13 +53,13 @@ class App extends Component {
     }
     else {
       let listTitle = 'All repositories';
-      if (this.state.filter.repoStatus === 'favorites') {
+      if (this.props.repoStatus === 'favorites') {
         listTitle = 'Favorites repositories';
       }
       content = (
         <RepoList
           title={listTitle}
-          repos={this.getFilteredRepos()}
+          repos={this.props.repos}
         />
       );
     }
@@ -133,20 +77,43 @@ App.propTypes = {
   favorites: PropTypes.array,
   repos: PropTypes.array,
   loading: PropTypes.bool,
-  fetchRepoList: PropTypes.func
+  textFilter: PropTypes.string,
+  repoStatus: PropTypes.string,
+  fetchRepoList: PropTypes.func,
+  showAllRepos: PropTypes.func,
+  showFavoritesRepos: PropTypes.func,
+  setTextFilter: PropTypes.func
 };
 
+function getVisibleRepos(repos, statusFilter, textFilter, favorites) {
+  return repos.filter(
+    (repo) => {
+      if (statusFilter === 'all') {
+        return repo.full_name.match(textFilter);
+      }
+      return favorites.indexOf(repo.id) !== -1
+        && repo.full_name.match(textFilter);
+    }
+  );
+}
+
 function mapStateToProps(state) {
+  const { repos, repoStatus, textFilter, loading } = state.repositories;
   return {
     favorites: state.favorites,
-    repos: state.repositories.repos,
-    loading: state.repositories.loading
+    repos: getVisibleRepos(repos, repoStatus, textFilter, state.favorites),
+    loading,
+    textFilter,
+    repoStatus
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    fetchRepoList: () => dispatch(fetchRepoList())
+    fetchRepoList: () => dispatch(fetchRepoList()),
+    setTextFilter: (event) => dispatch(setTextFilter(event.target.value)),
+    showAllRepos: () => dispatch(setRepoStatusFilter('all')),
+    showFavoritesRepos: () => dispatch(setRepoStatusFilter('favorites'))
   };
 }
 

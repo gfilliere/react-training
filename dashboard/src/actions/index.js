@@ -13,3 +13,17 @@ export function fetchRepoList() {
     callAPI: () => getRepos()
   };
 }
+
+export function setTextFilter(text) {
+  return {
+    type: 'TEXT_FILTER_CHANGE',
+    text
+  };
+}
+
+export function setRepoStatusFilter(value) {
+  return {
+    type: 'STATUS_FILTER_CHANGE',
+    value
+  };
+}
