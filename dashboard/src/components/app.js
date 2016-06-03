@@ -2,8 +2,8 @@ import React, { Component, PropTypes } from 'react';
 import { ControlLabel, Form, FormControl, FormGroup, PageHeader, Radio } from 'react-bootstrap';
 import { connect } from 'react-redux';
 
+import { fetchRepoList } from '../actions/';
 import RepoList from './RepoList';
-import { getRepos } from '../api/github';
 
 class App extends Component {
   constructor(props, context) {
@@ -12,9 +12,7 @@ class App extends Component {
       filter: {
         text: '',
         repoStatus: 'favorites'
-      },
-      repos: [],
-      loading: true
+      }
     };
 
     this.handleFilterChange = this.handleFilterChange.bind(this);
@@ -23,22 +21,11 @@ class App extends Component {
   }
 
   componentWillMount() {
-    getRepos({
-      sort: 'pushed'
-    }).then(request => {
-      this.setState({
-        repos: request.data,
-        loading: false,
-        filter: {
-          text: '',
-          repoStatus: this.props.favorites.length ? 'favorites' : 'all'
-        }
-      });
-    });
+    this.props.fetchRepoList();
   }
 
   getFilteredRepos() {
-    return this.state.repos.filter(
+    return this.props.repos.filter(
       (repo) => {
         if (this.state.filter.repoStatus === 'all') {
           return repo.full_name.match(this.state.filter.text);
@@ -114,7 +101,7 @@ class App extends Component {
   }
 
   render() {
-    const { loading } = this.state;
+    const { loading } = this.props;
 
     let content = null;
     if (loading) {
@@ -143,13 +130,24 @@ class App extends Component {
 }
 
 App.propTypes = {
-  favorites: PropTypes.array
+  favorites: PropTypes.array,
+  repos: PropTypes.array,
+  loading: PropTypes.bool,
+  fetchRepoList: PropTypes.func
 };
 
 function mapStateToProps(state) {
   return {
-    favorites: state.favorites
+    favorites: state.favorites,
+    repos: state.repositories.repos,
+    loading: state.repositories.loading
   };
 }
 
-export default connect(mapStateToProps)(App);
+function mapDispatchToProps(dispatch) {
+  return {
+    fetchRepoList: () => dispatch(fetchRepoList())
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

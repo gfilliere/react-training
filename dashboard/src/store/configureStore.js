@@ -1,9 +1,14 @@
-import { createStore } from 'redux';
+import { createStore, applyMiddleware, compose } from 'redux';
+import callApiMiddleware from './callApiMiddleware';
+
 import rootReducer from '../reducers';
 
 export default function configureStore(initialState) {
   const store = createStore(rootReducer, initialState,
-    window.devToolsExtension && window.devToolsExtension()
+    compose(
+      applyMiddleware(callApiMiddleware),
+      window.devToolsExtension && window.devToolsExtension()
+    )
   );
 
   if (module.hot) {
