@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { ControlLabel, Form, FormControl, FormGroup, PageHeader, Radio } from 'react-bootstrap';
+import { connect } from 'react-redux';
 
 import RepoList from './RepoList';
 import { getRepos } from '../api/github';
-import { getFavoritesRepos, setFavoritesRepos } from '../utils/favoriteManagement';
 
 class App extends Component {
   constructor(props, context) {
@@ -14,29 +14,24 @@ class App extends Component {
         repoStatus: 'favorites'
       },
       repos: [],
-      favorites: [],
       loading: true
     };
 
     this.handleFilterChange = this.handleFilterChange.bind(this);
-    this.handleFavoriteChange = this.handleFavoriteChange.bind(this);
-    this.isFavorite = this.isFavorite.bind(this);
     this.showAllRepos = this.showAllRepos.bind(this);
     this.showFavoritesRepos = this.showFavoritesRepos.bind(this);
   }
 
   componentWillMount() {
-    const favorites = getFavoritesRepos();
     getRepos({
       sort: 'pushed'
     }).then(request => {
       this.setState({
         repos: request.data,
         loading: false,
-        favorites,
         filter: {
           text: '',
-          repoStatus: favorites.length ? 'favorites' : 'all'
+          repoStatus: this.props.favorites.length ? 'favorites' : 'all'
         }
       });
     });
@@ -64,24 +59,7 @@ class App extends Component {
   }
 
   isFavorite(id) {
-    return this.state.favorites.indexOf(id) !== -1;
-  }
-
-  handleFavoriteChange(id) {
-    let nextFavorites = this.state.favorites;
-
-    if (this.isFavorite(id)) {
-      nextFavorites = nextFavorites.filter(item => item !== id);
-    }
-    else {
-      nextFavorites.push(id);
-    }
-
-    setFavoritesRepos(nextFavorites);
-
-    this.setState({
-      favorites: nextFavorites
-    });
+    return this.props.favorites.indexOf(id) !== -1;
   }
 
   handleFilterChange(event) {
@@ -151,8 +129,6 @@ class App extends Component {
         <RepoList
           title={listTitle}
           repos={this.getFilteredRepos()}
-          isFavorite={this.isFavorite}
-          handleFavoriteChange={this.handleFavoriteChange}
         />
       );
     }
@@ -166,7 +142,14 @@ class App extends Component {
   }
 }
 
-export default App;
+App.propTypes = {
+  favorites: PropTypes.array
+};
 
-// https://github.com/michael/github
-// https://developer.github.com/v3/
+function mapStateToProps(state) {
+  return {
+    favorites: state.favorites
+  };
+}
+
+export default connect(mapStateToProps)(App);

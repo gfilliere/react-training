@@ -20,8 +20,6 @@ function RepoList(props) {
               <Repo
                 key={repo.id}
                 {...repo}
-                favorite={props.isFavorite(repo.id)}
-                onChange={props.handleFavoriteChange}
               />
             )
           )
@@ -33,9 +31,7 @@ function RepoList(props) {
 
 RepoList.propTypes = {
   title: PropTypes.string,
-  repos: PropTypes.array,
-  isFavorite: PropTypes.func,
-  handleFavoriteChange: PropTypes.func
+  repos: PropTypes.array
 };
 
 export default RepoList;

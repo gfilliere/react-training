@@ -1,12 +1,13 @@
 import React, { Component, PropTypes } from 'react';
+import { connect } from 'react-redux';
 import { getPullRequests } from '../api/github';
+import { toggleFavorite } from '../actions';
 
 import { Badge, Glyphicon, Panel } from 'react-bootstrap';
 
 class Repo extends Component {
   constructor(props, context) {
     super(props, context);
-    this.handleFavoriteChange = this.handleFavoriteChange.bind(this);
     this.state = {
       pr: [],
       loaded: false
@@ -36,10 +37,6 @@ class Repo extends Component {
     );
   }
 
-  handleFavoriteChange() {
-    this.props.onChange(this.props.id);
-  }
-
   renderDetails() {
     if (!this.state.loaded) {
       return null;
@@ -59,7 +56,7 @@ class Repo extends Component {
           <input
             type="checkbox"
             checked={this.props.favorite}
-            onChange={this.handleFavoriteChange}
+            onChange={this.props.toggleFavorite}
           />
           {this.props.full_name}
         </label>
@@ -74,10 +71,22 @@ Repo.propTypes = {
   full_name: PropTypes.string,
   name: PropTypes.string,
   favorite: PropTypes.bool.isRequired,
-  onChange: PropTypes.func.isRequired,
   owner: PropTypes.shape({
     login: PropTypes.string
-  })
+  }),
+  toggleFavorite: PropTypes.func
 };
 
-export default Repo;
+function mapStateToProps(state, ownProps) {
+  return {
+    favorite: state.favorites.indexOf(ownProps.id) !== -1
+  };
+}
+
+function mapDispatchToProps(dispatch, ownProps) {
+  return {
+    toggleFavorite: () => dispatch(toggleFavorite(ownProps.id))
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Repo);
