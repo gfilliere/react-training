@@ -1,50 +1,30 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { getPullRequests } from '../api/github';
-import { toggleFavorite } from '../actions';
+import { toggleFavorite, fetchPulls } from '../actions';
 
 import { Badge, Glyphicon, Panel } from 'react-bootstrap';
 
 class Repo extends Component {
-  constructor(props, context) {
-    super(props, context);
-    this.state = {
-      pr: [],
-      loaded: false
-    };
-  }
-
   componentWillMount() {
     if (this.props.favorite) {
-      this.getPullRequests();
+      this.props.fetchPulls();
     }
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.favorite && !this.props.favorite) {
-      this.getPullRequests();
+      this.props.fetchPulls();
     }
   }
 
-  getPullRequests() {
-    getPullRequests(this.props.owner.login, this.props.name).then(
-      request => {
-        this.setState({
-          pr: request.data,
-          loaded: true
-        });
-      }
-    );
-  }
-
   renderDetails() {
-    if (!this.state.loaded) {
+    if (this.props.isFetching) {
       return null;
     }
     return (
       <div>
         <Glyphicon glyph="glyphicon glyphicon-random" />
-        {' '}Pull requests: <Badge>{this.state.pr.length}</Badge>
+        {' '}Pull requests: <Badge>{this.props.items.length}</Badge>
       </div>
     );
   }
@@ -74,18 +54,26 @@ Repo.propTypes = {
   owner: PropTypes.shape({
     login: PropTypes.string
   }),
-  toggleFavorite: PropTypes.func
+  isFetching: PropTypes.bool,
+  items: PropTypes.array,
+  toggleFavorite: PropTypes.func,
+  fetchPulls: PropTypes.func
 };
 
 function mapStateToProps(state, ownProps) {
   return {
-    favorite: state.favorites.indexOf(ownProps.id) !== -1
+    favorite: state.favorites.indexOf(ownProps.id) !== -1,
+    isFetching: state.pulls[ownProps.full_name] ?
+      state.pulls[ownProps.full_name].isFetching : false,
+    items: state.pulls[ownProps.full_name] ?
+      state.pulls[ownProps.full_name].items : []
   };
 }
 
 function mapDispatchToProps(dispatch, ownProps) {
   return {
-    toggleFavorite: () => dispatch(toggleFavorite(ownProps.id))
+    toggleFavorite: () => dispatch(toggleFavorite(ownProps.id)),
+    fetchPulls: () => dispatch(fetchPulls(ownProps.owner.login, ownProps.name, ownProps.full_name))
   };
 }
 

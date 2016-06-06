@@ -1,4 +1,4 @@
-import { getRepos } from '../api/github';
+import { getRepos, getPullRequests } from '../api/github';
 
 export function toggleFavorite(repositoryId) {
   return {
@@ -25,5 +25,20 @@ export function setRepoStatusFilter(value) {
   return {
     type: 'STATUS_FILTER_CHANGE',
     value
+  };
+}
+
+export function fetchPulls(owner, name, fullName) {
+  return {
+    types: ['FETCH_PULLS_REQUEST', 'FETCH_PULLS_SUCCESS', 'FETCH_PULLS_FAILURE'],
+    callAPI: () => getPullRequests(owner, name),
+    shouldCallAPI: (state) => {return typeof state.pulls[fullName] === 'undefined'}, //eslint-disable-line
+    payload: {
+      parameters: {
+        fullName,
+        owner,
+        name
+      }
+    }
   };
 }
