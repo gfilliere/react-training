@@ -1,0 +1,343 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="css/reveal.css">
+        <link rel="stylesheet" href="css/theme/black.css">
+        <link rel="stylesheet" href="lib/css/zenburn.css">
+    </head>
+    <body>
+      <div class="reveal">
+        <div class="slides">
+          <section>
+            <h3>Going further</h3>
+            <ul>
+              <li>Unit Tests</li>
+              <li>CSS Modules</li>
+              <li>React Router</li>
+              <li>GraphQL</li>
+              <li>Relay</li>
+            </ul>
+          </section>
+          <section>
+            <section>
+              <h3>Unit tests - Redux actions</h3>
+              <pre><code class="javascript" style="max-height:500px;">
+// actions.js
+export function toggleFavorite(repositoryId) {
+  return {
+    type: 'TOGGLE_FAVORITE',
+    repositoryId
+  };
+}
+// actions.spec.js
+describe('actions', () => {
+  it('should create an action to add a favorite', () => {
+    const repoId = '132456789';
+    const expectedAction = {
+      type: 'TOGGLE_FAVORITE',
+      repoId: '132456789'
+    };
+    expect(
+      actions.toggleFavorite(repositoryId)
+    ).toEqual(expectedAction);
+  })
+})
+              </code></pre>
+              </ul>
+            </section>
+            <section>
+              <h3>Unit tests - Redux reducers</h3>
+              <pre><code class="javascript" style="max-height:500px;font-size: smaller;">
+describe('favorites reducer', () => {
+  it('should return the initial state', () => {
+    expect(
+      favoritesReducer(undefined, {})
+    ).toEqual([]);
+  });
+  it('TOGGLE_FAVORITE should add a new favorite to the state', () => {
+    expect(
+      favoritesReducer(undefined, {
+        type: 'TOGGLE_FAVORITE',
+        repoId: '123456'
+      })
+    ).toEqual(['123456']);
+  });
+  it('TOGGLE_FAVORITE should remove a favorite from state', () => {
+    expect(
+      favoritesReducer([], {
+        type: 'TOGGLE_FAVORITE',
+        repoId: '123456'
+      })
+    ).toEqual(['123456']);
+  });
+})
+              </code></pre>
+            </section>
+            <section>
+              <h3>Unit tests - Redux</h3>
+              <ul>
+                <li>
+                  <a href="http://redux.js.org/docs/recipes/WritingTests.html">Official documentation</a>
+                </li>
+                <li>
+                  <a href="https://github.com/allocine/www/tree/master/app/Resources/src-front/js/test/reducers">AC Refonte Reducers tests</a>
+                </li>
+              </ul>
+            </section>
+            <section>
+              <h3>Unit tests - React Components with Enzyme</h3>
+              <pre><code class="javascript" style="max-height:500px;font-size: smaller;">
+it('should render the first page link and a separator when first is not included', () => {
+  const pagerParameters = {
+    currentPage: 1, pages: [1, 2, 3, 4, 5, 6, 7, 7], pageCount: 7
+  };
+  const wrapper = shallow(&lt;Pager {...pagerParameters} /&gt;);
+  expect(
+    wrapper.find('.button.item').length
+  ).toEqual(7);
+});
+
+it('should disable the previous link on first page', () => {
+  const pagerParameters = {
+    currentPage: 1, pages: [1, 2, 3, 4, 5, 6, 7], pageCount: 7
+  };
+  const wrapper = shallow(&lt;Pager {...pagerParameters} /&gt;);
+  expect(
+    wrapper.find('.button-left').hasClass('button-disabled')
+  ).toEqual(true);
+});
+
+it('simulates click events', () => {
+  const onButtonClick = sinon.spy();
+  const wrapper = shallow(&lt;Foo onButtonClick={onButtonClick} /&gt;);
+  wrapper.find('button').simulate('click');
+  expect(onButtonClick.calledOnce).to.equal(true);
+});
+              </code></pre>
+            </section>
+            <section>
+              <h3>Unit tests - React Components connected to redux</h3>
+              <pre><code class="javascript" style="max-height:500px;font-size: smaller;">
+// App.js
+class App extends Component { /* ... */ }
+
+// Use default export for the connected component (for app)
+export default connect(mapDispatchToProps)(App)
+
+// App.test.js :
+Import App from './App';
+// We need to create a store, add a provider & eveything in order to test the Component
+              </code></pre>
+              <pre><code class="javascript" style="max-height:500px;font-size: smaller;">
+// App.js
+export class App extends Component { /* ... */ }
+
+// Use default export for the connected component (for app)
+export default connect(mapDispatchToProps)(App)
+
+// App.test.js :
+import {App} from './App';
+              </code></pre>
+            </section>
+            <section>
+              <ul>
+                <li>
+                  <a href="http://airbnb.io/enzyme/">Enzyme</a>
+                </li>
+                <li>
+                  <a href="http://pebblecode.com/blog/react-redux-unit-testing/">React Redux Unit Testing</a>
+                </li>
+              </ul>
+            </section>
+          </section>
+          <section>
+            <section>
+              <h3>CSS Modules</h3>
+              <pre><code class="css" style="max-height:300px;font-size: smaller;">
+.common {
+  /* all the common styles you want */
+}
+.normal {
+  composes: common;
+  /* anything that only applies to Normal */
+}
+.disabled {
+  composes: common;
+  /* anything that only applies to Disabled */
+}
+.error {
+  composes: common;
+  /* anything that only applies to Error */
+}</code></pre>
+            <pre><code class="javascript" style="max-height:300px;font-size: smaller;">
+import { Component } from 'react';
+import styles from './submit-button.css';
+
+export default class SubmitButton extends Component {
+  render() {
+    let className = styles.normal;
+    if (this.props.form.errorOccurred) {
+      className = styles.error;
+    } else if (!this.props.form.valid) {
+      className = styles.disabled;
+    }
+    return &lt;button className={className}&gt;Submit&lt;/button&gt;
+  }
+}</code></pre>
+            </section>
+            <section>
+              <ul>
+                <li><a href="http://glenmaddern.com/articles/css-modules">CSS Modules - Welcome to the future</a></li>
+                <li><a href="https://css-tricks.com/css-modules-part-3-react/">CSS Modules and React</a></li>
+              </ul>
+            </section>
+          </section>
+          <section>
+            <section>
+              <h3>Multipage app without React Router</h3>
+              <pre><code class="js" style="max-height:500px;font-size: smaller;">
+function App() {
+  let Child = null;
+  switch (window.location.pathname) {
+    case '/about': Child = About; break;
+    case '/inbox': Child = Inbox; break;
+    default: Child = Home;
+  }
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;App&lt;/h1&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;a href="#/about"&gt;About&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="#/inbox"&gt;Inbox&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+      &lt;Child/&gt;
+    &lt;/div&gt;
+  )
+}
+render(&lt;App /&gt;, document.body)
+</code></pre>
+            </section>
+            <section>
+              <h3>With React Router</h3>
+              <pre><code class="js" style="max-height:500px;font-size: smaller;">
+function App() {
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;App&lt;/h1&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;Link to="/about"&gt;About&lt;/Link&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;Link to="/inbox"&gt;Inbox&lt;/Link&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+      {this.props.children}
+    &lt;/div&gt;
+  )
+}
+
+render((
+  &lt;Router history={hashHistory}&gt;
+    &lt;Route path="/" component={App}&gt;
+      &lt;IndexRoute component={Home} /&gt;
+      &lt;Route path="about" component={About} /&gt;
+      &lt;Route path="inbox" component={Inbox} /&gt;
+    &lt;/Route&gt;
+  &lt;/Router&gt;
+), document.body)
+  </code></pre>
+            </section>
+          </section>
+          <section>
+            <section>
+              <h3>GraphQL</h3>
+              <ul>
+                <li>Data Query Language from Facebook</li>
+                <li>The server "exposes" a list of available schema / data</li>
+                <li>The client describes which data to retrieve</li>
+                <li>Only a query language : data fetching is up to the developper</li>
+              </ul>
+            </section>
+            <section>
+              <h3>Schema</h3>
+              <pre><code class="json" style="max-height:500px;font-size: smaller;">
+type Movie implements Node {
+  id: ID!
+  id_movie: Int! # Original movie id
+  title: String!
+  created_at: String!
+  released_at: String
+  run_time: int
+  genre:[Pair]
+  nationality: [Pair]
+  poster: String
+}
+
+type Pair {
+  id: Int!
+  name: String!
+}
+</code></pre>
+            </section>
+            <section>
+              <h3>Query</h3>
+              <pre><code class="json" style="max-height:500px;font-size: smaller;">
+{
+  movie: node(id: "TW92aWU6MQ==") {
+    id
+    id_movie
+    title
+    run_time
+    genre {
+      id
+      name
+    }
+  }
+}
+</code></pre>
+            </section>
+            <section>
+              <h3>Answer</h3>
+              <pre><code class="json" style="max-height:500px;font-size: smaller;">
+{
+  "data": {
+    "movie": {
+      "id": "TW92aWU6MQ=="
+      "id_movie": 1,
+      "title": "Le Facteur sonne toujours deux fois",
+      "run_time" : 7260
+      "genre": [
+        {
+          "id": 13018,
+          "name": "Policier"
+        },
+        {
+          "id": 13008,
+          "name": "Drame"
+        },
+        {
+          "id": 13023,
+          "name": "Thriller"
+        }
+      ]
+    }
+  }
+}
+</code></pre>
+            </section>
+          </section>
+        </div>
+      </div>
+        <script src="lib/js/head.min.js"></script>
+        <script src="js/reveal.js"></script>
+
+        <script>
+            Reveal.initialize({
+                history: true,
+                dependencies: [
+                    {
+                        src: 'plugin/highlight/highlight.js', async: true, callback: function () {
+                        hljs.initHighlightingOnLoad();
+                    }
+                    }
+                ]
+            });
+        </script>
+    </body>
+</html>
